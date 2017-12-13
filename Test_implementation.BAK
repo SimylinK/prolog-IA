@@ -1,0 +1,143 @@
+/*-------------------------------------*/
+/*             Permutations            */
+/*-------------------------------------*/
+
+
+/* Pour faire  toutes les permutations */
+/* Code initialement fais par Yao Shi et Nathan Maraval lors du premier TP le  07/12/2017*/
+
+/* Méthode qui va sortir toutes les permutations utiles pour les dimensions
+   La première dimension est fixée sur la première position
+ * @param 1 : entrée : la liste des éléments à permuter
+ * @param 2 : sortie : la liste des éléments permutés
+*/
+permutationsDimensions([X | Liste], Sortie):-
+   permutations(Liste, Permutation),
+   Sortie = [X | Permutation].
+
+
+/* Méthode qui va sortir toutes les permutations d'une liste
+ * @param 1 : entrée : la liste des éléments à permuter
+ * @param 2 : sortie : la liste des éléments permutés
+*/
+permutations([DernierElement], ListeSortie):-
+   ListeSortie = [DernierElement].
+permutations(ListEntree, [ElementChoisis | FinSortie]):-
+    choixDansListe(ListEntree, ElementChoisis, ResteListe),
+    permutations(ResteListe, FinSortie).
+
+/* Méthode qui va choisir un élément dans une liste
+ * @param 1 : entrée : la liste dans laquelle on va chercher un élément
+ * @param 2 : sortie : l'élément choisi
+ * @param 3 : sortie : une liste contenant tous les autres éléments
+*/
+choixDansListe([A | FinListe], ElementChoisis, ResteListe) :-
+    ElementChoisis = A,
+    ResteListe = FinListe.
+choixDansListe([PremierElement | FinListe], ElementChoisis, [PremierElement | ResteListe]) :-
+    choixDansListe(FinListe, ElementChoisis, ResteListe).
+
+
+/*-------------------------------------*/
+/*      Calcul de l'aire               */
+/*-------------------------------------*/
+
+/* Code initialement fais par Yao Shi et Nathan Maraval lors du tp du 12/12/2017 */
+
+
+/* Fonction qui définie la valeur max de toutes les dimensions */
+max(dim1, 10).
+max(dim2, 6).
+max(dim3, 5).
+max(dim4, 4).
+max(dim5, 5).
+
+/* Fonction qui définis pour chaque dimension de chaque diagramme une valeur */
+value(diagA, dim1, 5).
+value(diagA, dim2, 3).
+value(diagA, dim3, 3).
+value(diagA, dim4, 4).
+value(diagA, dim5, 5).
+
+value(diagB, dim1, 4).
+value(diagB, dim2, 2).
+value(diagB, dim3, 5).
+value(diagB, dim4, 0).
+value(diagB, dim5, 1).
+
+/* pré-condition : Dim1 et Dim2 sont à placé à côté */
+
+/* Donne l'aire d'un triangle sur le diagramme
+ * @param 1 : entrée : le diagramme
+ * @param 2 : entrée : la première dimension
+ * @param 3 : entrée : une liste contenant tous les autres élémentsla seconde dimension
+ * @param 4 : sortie : l'aire du triangle
+*/
+aireTriangle(Diag, Dim1, Dim2, Aire):-
+    max(Dim1, MaxDim1),
+    max(Dim2, MaxDim2),
+    value(Diag, Dim1, ValueDiagDim1),
+    value(Diag, Dim2, ValueDiagDim2),
+    Aire is (1/2) * (ValueDiagDim1/MaxDim1) * (ValueDiagDim2/MaxDim2).
+
+
+
+/* Donne l'aire d'un diagramme
+ * @param 1 : entrée : le diagramme
+ * @param 2 : entrée : la liste des dimensions dans l'ordre
+ * @param 4 : sortie : l'aire du diagramme
+*/
+
+/*  Cas où on a fais le tour du diagramme, et il faut calculer l'aire du dernier triangle */
+aireDiagramme(Diag, [DernierDim], Aire):-
+    aireTriangle(Diag, DernierDim, dim1, Aire).
+aireDiagramme(Diag, [DimA, DimB | ListeDim], Aire):-
+    aireTriangle(Diag, DimA, DimB, AireTriangle),
+    aireDiagramme(Diag, [DimB | ListeDim], AireReste),
+    Aire is AireTriangle + AireReste.
+
+
+/* Code initialement fais lors du tp du 13/12/2017 par Yao Shi et Maraval Nathan */
+sommeAireDiagrammes([Diagramme], ListeDim, Aire):-
+   aireDiagramme(Diagramme, ListeDim, Aire).
+sommeAireDiagrammes([Diagramme |ListeDiag], ListeDim, Aire):-
+   aireDiagramme(Diagramme, ListeDim, AireDiag),
+   sommeAireDiagrammes(ListeDiag, ListeDim, AireReste),
+   Aire is AireDiag + AireReste.
+
+
+
+placementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
+   permutationsDimensions(ListeDimensions, Placement),
+   sommeAireDiagrammes(ListeDiag, Placement, Aire).
+
+
+/*-------------------------------------*/
+/*             Tests                   */
+/*-------------------------------------*/
+
+
+/* Code fais pour tester des fonctionnalités  */
+
+parent('Martin', 'Pierre').
+parent('John', 'Pierre').
+
+
+somme([X], Solution):-
+   Solution is X.
+somme([X | FinListe], Solution):-
+   somme(FinListe, Resultat),
+   Solution is Resultat + X.
+
+
+test(Liste, Solution):-
+   Solution = Liste.
+
+
+element([X | FinListe], Solution):-
+    Solution = X.
+element([X | FinListe], Solution):-
+    element(FinListe, Solution).
+
+
+inverse([X, Y], [Y, X]).
