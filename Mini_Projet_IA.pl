@@ -65,6 +65,18 @@ value(diagB, dim3, 5).
 value(diagB, dim4, 0).
 value(diagB, dim5, 1).
 
+value(diagC, dim1, 9).
+value(diagC, dim2, 5).
+value(diagC, dim3, 4).
+value(diagC, dim4, 3).
+value(diagC, dim5, 4).
+
+value(diagD, dim1, 8).
+value(diagD, dim2, 5).
+value(diagD, dim3, 5).
+value(diagD, dim4, 3).
+value(diagD, dim5, 2).
+
 /* pré-condition : Dim1 et Dim2 sont à placé à côté */
 
 /* Donne l'aire d'un triangle sur le diagramme
@@ -125,6 +137,49 @@ meilleurPlacementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
   )).
 
 
+
+/*-------------------------------------*/
+/*      Calcul de la différence        */
+/*-------------------------------------*/
+
+/* Code initialement fais par Yao Shi et Nathan Maraval lors du tp du 13/12/2017 */
+
+
+/* Fonction qui compare la fifférence de 2 diagrammes */
+
+/*
+ * @param 1 : entrée : le diagramme A
+ * @param 2 : entrée : le diagramme B
+ * @param 3 : entrée : la liste des dimensions dans l'ordre
+ * @param 4 : différence : la différence de les 2 diagrammes
+*/
+
+/* Fonction qui compare la différence de 2 diagrammes sur une dimension*/
+compareDeuxDiagUneDim(DiagA, DiagB, Dim, Diff):-
+    max(Dim, MaxDim),
+    value(DiagA, Dim, ValueDiagDimA),
+    value(DiagB, Dim, ValueDiagDimB),
+    Diff is abs(ValueDiagDimA - ValueDiagDimB) / MaxDim.
+
+/* Fonction qui compare la différence de 2 diagrammes*/
+compareDeuxDiagrammes(DiagA, DiagB, [], 0).
+compareDeuxDiagrammes(DiagA, DiagB, [Dim | ListeDim], SommeDiff):-
+    compareDeuxDiagUneDim(DiagA, DiagB, Dim, Diff),
+    compareDeuxDiagrammes(DiagA, DiagB, ListeDim, AutreDiff),
+    SommeDiff is AutreDiff + Diff.
+
+/* Fonction qui calcul la différence de tout diagrammes dans un liste*/
+compareToutDiagrammes([DernierDiag], ListeDim, 0).
+compareToutDiagrammes([DiagA, DiagB | ListeDiag], ListeDim, ToutDiff):-
+    compareDeuxDiagrammes(DiagA, DiagB, ListeDim, SommeDiff),
+    compareToutDiagrammes([DiagB | ListeDiag], ListeDim, AutreSommeDiff),
+    ToutDiff is AutreSommeDiff + SommeDiff.
+
+/* Fonction qui calcul la différence de tout diagrammes de tout les listes*/
+compareTouteLesListes(ListDiag, ListeDim, ToutDiffDeListe, ListDiagPermutes):-
+    permutations(ListDiag, ListDiagPermutes),
+    compareToutDiagrammes(ListDiagPermutes, ListeDim, ToutDiff),
+    ToutDiffDeListe is ToutDiff.
 
 /*-------------------------------------*/
 /*             Tests                   */
