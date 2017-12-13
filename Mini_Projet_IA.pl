@@ -164,7 +164,7 @@ getMax([[PlacementTmp, AireTmp] | ListePairePlacementAire], Placement, Aire):-
 
 /* Fonction qui compare la différence de 2 diagrammes sur une dimension*/
 compareDeuxDiagUneDim(DiagA, DiagB, Dim, Diff):-
-    max(Dim, MaxDim),
+    maxDim(Dim, MaxDim),
     value(DiagA, Dim, ValueDiagDimA),
     value(DiagB, Dim, ValueDiagDimB),
     Diff is abs(ValueDiagDimA - ValueDiagDimB) / MaxDim.
