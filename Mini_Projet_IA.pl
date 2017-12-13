@@ -98,6 +98,12 @@ aireDiagramme(Diag, [DimA, DimB | ListeDim], Aire):-
 
 
 /* Code initialement fais lors du tp du 13/12/2017 par Yao Shi et Maraval Nathan */
+
+/* Calcul la somme de l'aires des diagrammes pour 1 placement de dimension
+ * @param 1 : entrée : la liste des diagrammes
+ * @param 2 : entrée : la liste des dimensions dans un ordre
+ * @param 4 : sortie : l'aire du diagramme
+*/
 sommeAireDiagrammes([Diagramme], ListeDim, Aire):-
    aireDiagramme(Diagramme, ListeDim, Aire).
 sommeAireDiagrammes([Diagramme |ListeDiag], ListeDim, Aire):-
@@ -110,6 +116,14 @@ sommeAireDiagrammes([Diagramme |ListeDiag], ListeDim, Aire):-
 placementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
    permutationsDimensions(ListeDimensions, Placement),
    sommeAireDiagrammes(ListeDiag, Placement, Aire).
+
+meilleurPlacementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
+   placementDimensions(ListeDiag, ListeDimensions, Placement, Aire),    % Find the federation for which
+  \+((                % there are no
+    federation(_, _, _, AutreAire), % other federation with
+    AutreAire > Aire             % more qualified countries
+  )).
+
 
 
 /*-------------------------------------*/
