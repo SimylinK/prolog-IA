@@ -46,11 +46,11 @@ choixDansListe([PremierElement | FinListe], ElementChoisis, [PremierElement | Re
 
 
 /* Fonction qui définie la valeur max de toutes les dimensions */
-max(dim1, 10).
-max(dim2, 6).
-max(dim3, 5).
-max(dim4, 4).
-max(dim5, 5).
+maxDim(dim1, 10).
+maxDim(dim2, 6).
+maxDim(dim3, 5).
+maxDim(dim4, 4).
+maxDim(dim5, 5).
 
 /* Fonction qui définis pour chaque dimension de chaque diagramme une valeur */
 value(diagA, dim1, 5).
@@ -74,8 +74,8 @@ value(diagB, dim5, 1).
  * @param 4 : sortie : l'aire du triangle
 */
 aireTriangle(Diag, Dim1, Dim2, Aire):-
-    max(Dim1, MaxDim1),
-    max(Dim2, MaxDim2),
+    maxDim(Dim1, MaxDim1),
+    maxDim(Dim2, MaxDim2),
     value(Diag, Dim1, ValueDiagDim1),
     value(Diag, Dim2, ValueDiagDim2),
     Aire is (1/2) * (ValueDiagDim1/MaxDim1) * (ValueDiagDim2/MaxDim2).
@@ -111,19 +111,27 @@ sommeAireDiagrammes([Diagramme |ListeDiag], ListeDim, Aire):-
    sommeAireDiagrammes(ListeDiag, ListeDim, AireReste),
    Aire is AireDiag + AireReste.
 
-
+% placementDimensions([diagA, diagB], [dim1, dim2, dim3, dim4, dim5], Placement, Aire).
 
 placementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
    permutationsDimensions(ListeDimensions, Placement),
    sommeAireDiagrammes(ListeDiag, Placement, Aire).
 
-meilleurPlacementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
-   placementDimensions(ListeDiag, ListeDimensions, Placement, Aire),    % Find the federation for which
-  \+((                % there are no
-    federation(_, _, _, AutreAire), % other federation with
-    AutreAire > Aire             % more qualified countries
-  )).
+% meilleurPlacementDimensions([diagA, diagB], [dim1, dim2, dim3, dim4, dim5], Placement, Aire).
 
+meilleurPlacementDimensions(ListeDiag, ListeDimensions, Placement, Aire):-
+   bagof([Placement, Aire],placementDimensions([diagA, diagB], [dim1, dim2, dim3, dim4, dim5], Placement, Aire),Bag),
+   getMax(Bag, Placement, Aire).
+
+getMax([[Placement, Aire]], Placement, Aire).
+getMax([[PlacementTmp, AireTmp] | ListePairePlacementAire], Placement, Aire):-
+   getMax(ListePairePlacementAire, PlacementActuel, AireActuel),
+   ( AireTmp > AireActuel ->
+      Aire = AireTmp,
+      Placement = PlacementTmp
+   ;  Aire = AireActuel,
+      Placement = PlacementActuel
+   ).
 
 
 /*-------------------------------------*/
