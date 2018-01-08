@@ -37,17 +37,6 @@ neighbour4([CoordX, CoordY], [NeighbourX, NeighbourY]) :-
     CoordY < SizeY,
     NeighbourX is CoordX,
     NeighbourY is CoordY + 1.
-    
-    
-/* Pour les tests :
-
-neighbour4([1, 0], Voisin).
-
-[0, 0];
-[2,0];
-[1,1].
-
-*/
 
 /*-------------------------------------*/
 /*         Access diagrammes           */
@@ -71,15 +60,6 @@ getDiagramme([_ | Reste], CoordX, CoordY, Diagramme) :-
     CoordY > 0,
     NewCoordY is CoordY-1,
     getDiagramme(Reste, CoordX, NewCoordY, Diagramme).
-
-
-/* test
-
-getDiagramme([[diagA, diagB, diagC], [diagD, diagE, diagF], [diagG, diagH, diagI]], 1, 1, Diagramme).
-
-Diagramme = diagE.
-
-*/
 
 
 /* Méthode permettant d'obtenir les coordonnées suivantes
@@ -117,11 +97,6 @@ fillLine(ListDiags, SizeLine, [Diag | EndLine], ResteListeDiags):-
     NewSize is SizeLine - 1,
     fillLine(ResteListe, NewSize, EndLine, ResteListeDiags).
     
-/* Test
-
-fillLine([diagA, diagB, diagC, diagD, diagE], 3, Line, ResteListe).
-
-*/
 
 /* Méthode permettant d'obtenir toutes les permutations diagrammes possibles sur une matrice
  * @param 1 : entrée : La liste des diagrammes à placer
@@ -147,8 +122,3 @@ gridPermutationsRec(ListDiags, ActualLine, [Line | ResteLines]) :-
     gridPermutationsRec(ResteDiags, NewLine, ResteLines).
     
     
-/*
-
-gridPermutations([diagA, diagB, diagC, diagD], Grid).
-
-*/
